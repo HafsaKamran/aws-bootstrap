@@ -1,4 +1,8 @@
 source aws_credentials.sh
+mkdir -p ~/.github
+echo "aws-bootstrap" > ~/.github/aws-bootstrap-repo
+echo "<username>" > ~/.github/aws-bootstrap-owner
+echo "<Github_Token>" > ~/.github/aws-bootstrap-access-token
 
 STACK_NAME=awsbootstrap
 REGION=us-east-1 
@@ -43,9 +47,9 @@ aws cloudformation deploy \
     GitHubPersonalAccessToken=$GH_ACCESS_TOKEN \
     CodePipelineBucket=$CODEPIPELINE_BUCKET
 
-    # If the deploy succeeded, show the DNS name of the created instance
+# If the deploy succeeded, show the DNS name of the created instance
 if [ $? -eq 0 ]; then
   aws cloudformation list-exports \
     --profile awsbootstrap \
-    --query "Exports[?starts_with(Name,'InstanceEndpoint')].Value"
+    --query "Exports[?ends_with(Name,'LBEndpoint')].Value" 
 fi
